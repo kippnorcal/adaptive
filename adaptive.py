@@ -41,5 +41,23 @@ class Adaptive:
         request_string = ET.tostring(call, encoding="UTF-8", method="xml")
         return request_string
 
-        def export_data(self):
-            pass
+    def export_data(self):
+        """Call Adaptive API exportData method"""
+        # Build XML elements
+        version = ET.Element("version")
+        version.set("name", self.version)
+        format_elmt = ET.Element("format")
+        format_elmt.set("useInternalCodes", "true")
+        format_elmt.set("includeUnmappedItems", "false")
+        rules = ET.Element("rules")
+        rules.set("timeRollups", "true")
+        # Format the request and send to Adaptive
+        method_data = [version, format_elmt, rules]
+        xml = self._format_xml_request("exportData", method_data=method_data)
+        logging.info("POST request exportData from API")
+        response = requests.post(self.url, data=xml)
+        if response.status_code == 200:
+            logging.debug(f"Request successful")
+        else:
+            raise Exception(f"Request not successful")
+        return response.text

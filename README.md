@@ -29,6 +29,10 @@ API_PWD=
 CALLER_NAME=
 TOP_LEVEL=
 
+# Data filter
+START_YEAR=
+END_YEAR=
+
 # Notification email settings
 GMAIL_USER=
 GMAIL_PWD=
