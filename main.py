@@ -88,19 +88,19 @@ def parse_data_export(sql, parsed_dict):
 
 
 def main():
-    try:
-        mailer = Mailer()
-        adaptive = Adaptive(VERSION)
-        sql = MSSQL()
-        xml = adaptive.export_data()
-        parsed_dict = xmltodict.parse(xml)
-        df = parse_data_export(sql, parsed_dict)
-        sql.insert_into("Adaptive_Data", df, if_exists="replace", chunksize=10000)
-        mailer.notify(success=True)
-    except:
-        logging.error(traceback.format_exc())
-        mailer.notify(success=False)
+    adaptive = Adaptive(VERSION)
+    sql = MSSQL()
+    xml = adaptive.export_data()
+    parsed_dict = xmltodict.parse(xml)
+    df = parse_data_export(sql, parsed_dict)
+    sql.insert_into("Adaptive_Data", df, if_exists="replace", chunksize=10000)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+        error_message = None
+    except Exception as e:
+        logging.exception(e)
+        error_message = traceback.format_exc()
+    Mailer("Adaptive Connector").notify(error_message=error_message)
