@@ -6,13 +6,13 @@ import requests
 
 
 class Adaptive:
-    def __init__(self, version):
+    def __init__(self):
         self.url = getenv("API_URL")
         self.login = getenv("API_USER")
         self.password = getenv("API_PWD")
         self.caller_name = getenv("CALLER_NAME")
         self.top_level = getenv("TOP_LEVEL")
-        self.version = version
+        self.version = getenv("VERSION")
 
     def _format_xml_request(self, method, method_data=None):
         """Format the XML request to be sent to Adaptive.

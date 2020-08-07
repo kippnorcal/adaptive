@@ -70,7 +70,7 @@ def parse_data_export(sql, parsed_dict):
 
 
 def main():
-    adaptive = Adaptive(os.getenv("VERSION"))
+    adaptive = Adaptive()
     sql = MSSQL()
     xml = adaptive.export_data()
     parsed_dict = xmltodict.parse(xml)
