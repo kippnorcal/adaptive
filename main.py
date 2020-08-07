@@ -1,5 +1,6 @@
 import argparse
 import logging
+from io import StringIO
 import sys
 import os
 import traceback
@@ -25,13 +26,12 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def write_parsed_data_to_csv(parsed_dict):
+def extract_data_from_parsed_dict(parsed_dict):
     """Pull csv-shaped data from parsed dictionary and write to file."""
-    logging.debug("Extracting data to csv...")
     data = parsed_dict["response"]["output"]
     data.lstrip("![CDATA[").rstrip("]]")
-    with open("output.csv", "w") as f:
-        f.write(data)
+    df = pd.read_csv(StringIO(data))
+    return df
 
 
 def reshape_df_wide_to_long(df):
@@ -61,16 +61,8 @@ def clean_and_filter_data(sql, df):
 
 def parse_data_export(sql, parsed_dict):
     """Convert parsed data to dataframe."""
-    write_parsed_data_to_csv(parsed_dict)
-    df = pd.read_csv("output.csv")
-    df.rename(
-        columns={
-            "Account Name": "AccountName",
-            "Account Code": "AccountCode",
-            "Level Name": "LevelName",
-        },
-        inplace=True,
-    )
+    df = extract_data_from_parsed_dict(parsed_dict)
+    df.rename(columns={col: col.replace(" ", "") for col in df.columns}, inplace=True)
     df = reshape_df_wide_to_long(df)
     df = clean_and_filter_data(sql, df)
     logging.info(f"Retrieved {len(df)} filtered and reshaped records.")
