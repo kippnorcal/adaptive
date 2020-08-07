@@ -54,10 +54,10 @@ class Adaptive:
         # Format the request and send to Adaptive
         method_data = [version, format_elmt, rules]
         xml = self._format_xml_request("exportData", method_data=method_data)
-        logging.info("POST request exportData from API")
+        logging.debug("Sent POST request exportData to Adaptive API")
         response = requests.post(self.url, data=xml)
         if response.status_code == 200:
-            logging.debug(f"Request successful")
+            logging.info(f"exportData request successful")
         else:
-            raise Exception(f"Request not successful")
+            raise Exception(f"exportData request not successful")
         return response.text

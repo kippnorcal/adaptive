@@ -12,16 +12,6 @@ from adaptive import Adaptive
 from mailer import Mailer
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--version",
-    help="Name of the version that data will be pulled from.",
-    dest="version",
-    nargs=1,
-)
-args = parser.parse_args()
-VERSION = args.version[0]
-
 logging.basicConfig(
     handlers=[
         logging.FileHandler(filename="app.log", mode="w+"),
@@ -37,7 +27,7 @@ logger.setLevel(logging.INFO)
 
 def write_parsed_data_to_csv(parsed_dict):
     """Pull csv-shaped data from parsed dictionary and write to file."""
-    logging.info("Extracting data to csv...")
+    logging.debug("Extracting data to csv...")
     data = parsed_dict["response"]["output"]
     data.lstrip("![CDATA[").rstrip("]]")
     with open("output.csv", "w") as f:
@@ -46,11 +36,11 @@ def write_parsed_data_to_csv(parsed_dict):
 
 def reshape_df_wide_to_long(df):
     """Convert wide data to long. Finance team only needs rollups by year."""
-    logging.info("Melting df...")
+    logging.debug("Melting df...")
     # Drop month/quarter columns, only keep year rollup
     start_year = int(os.getenv("START_YEAR"))
     end_year = int(os.getenv("END_YEAR"))
-    year_strings = [str(x) for x in range(start_year, end_year + 1, 1)]
+    year_strings = [str(x) for x in range(start_year, end_year + 1)]
     id_vars = ["AccountName", "AccountCode", "LevelName"]
     all_columns = id_vars + year_strings
     df = df[all_columns]
@@ -83,17 +73,18 @@ def parse_data_export(sql, parsed_dict):
     )
     df = reshape_df_wide_to_long(df)
     df = clean_and_filter_data(sql, df)
-    logging.info(f"Retrieved {len(df)} records.")
+    logging.info(f"Retrieved {len(df)} filtered and reshaped records.")
     return df
 
 
 def main():
-    adaptive = Adaptive(VERSION)
+    adaptive = Adaptive(os.getenv("VERSION"))
     sql = MSSQL()
     xml = adaptive.export_data()
     parsed_dict = xmltodict.parse(xml)
     df = parse_data_export(sql, parsed_dict)
     sql.insert_into("Adaptive_Data", df, if_exists="replace", chunksize=10000)
+    logging.info(f"Inserted {len(df)} records to Adaptive_Data.")
 
 
 if __name__ == "__main__":
