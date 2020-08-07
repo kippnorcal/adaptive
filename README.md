@@ -48,10 +48,5 @@ docker build -t adaptive_connector .
 
 ### Run the job
 ```
-docker run --rm -it adaptive_connector --version "version name"
-```
-
-### Dev command
-```
-docker run --rm -it --network host adaptive_connector --version "Data Team Sandbox"
+docker run --rm -it adaptive_connector
 ```
