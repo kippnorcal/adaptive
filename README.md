@@ -39,6 +39,14 @@ GMAIL_PWD=
 SLACK_EMAIL=
 ```
 
+### Create Adaptive_Levels table with names of levels and flag to export them or not
+```
+CREATE TABLE custom.Adaptive_Levels (
+    LevelName VARCHAR(50),
+    Export BIT
+)
+```
+
 ## Running the job
 
 ### Build the docker image
