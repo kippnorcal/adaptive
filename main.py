@@ -124,7 +124,6 @@ def sync_personnel_data(sql, adaptive):
         if df_by_level is not None:
             all_dfs.append(df_by_level)
     df = pd.concat(all_dfs)
-    # df = df[df["IsParent"] != "Y"]
     sql.insert_into("Adaptive_Personnel", df, if_exists="replace")
     logging.info(f"Inserted {len(df)} records to Adaptive_Personnel.")
 
