@@ -29,7 +29,6 @@ logger.setLevel(logging.INFO)
 def remove_spaces_from_column_names(df):
     """Remove spaces from dataframe column names and replace with empty string."""
     df.rename(columns={col: col.replace(" ", "") for col in df.columns}, inplace=True)
-    return df
 
 
 def reshape_df_wide_to_long(df):
@@ -60,8 +59,11 @@ def parse_account_data_export(sql, xml, levels):
     parsed_dict = xmltodict.parse(xml)
     data = parsed_dict["response"]["output"]
     data.lstrip("![CDATA[").rstrip("]]")
-    df = pd.read_csv(StringIO(data))
-    df = remove_spaces_from_column_names(df)
+    # StringIO was failing (possibly due to the size of the data)
+    with open("data.csv", "w") as f:
+        f.write(data)
+    df = pd.read_csv("data.csv")
+    remove_spaces_from_column_names(df)
     df = reshape_df_wide_to_long(df)
     df = clean_and_filter_account_data(sql, df, levels)
     logging.debug(f"Retrieved {len(df)} filtered and reshaped records.")
@@ -71,8 +73,8 @@ def parse_account_data_export(sql, xml, levels):
 def parse_personnel_export(sql, xml):
     """Parse personnel data embedded in xml to dataframe."""
     parsed_dict = xmltodict.parse(xml)
-    if (
-        parsed_dict.get("response").get("output") is not None
+    if parsed_dict.get("response").get(
+        "output"
     ):  # output is none for some levels with no personnel
         data = parsed_dict["response"]["output"]["data"]["#text"]
         df = pd.read_csv(StringIO(data))
@@ -92,7 +94,7 @@ def parse_personnel_export(sql, xml):
             ],
             inplace=True,
         )
-        df = remove_spaces_from_column_names(df)
+        remove_spaces_from_column_names(df)
         logging.debug(f"Retrieved {len(df)} filtered and reshaped records.")
         return df
     else:
