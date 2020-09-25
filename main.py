@@ -109,8 +109,8 @@ def sync_accounts_data(sql, adaptive):
     levels = levels.LevelName.tolist()
     account_data = adaptive.export_data()
     df = parse_account_data_export(sql, account_data, levels)
-    sql.insert_into("Adaptive_Data", df, if_exists="replace", chunksize=10000)
-    logging.info(f"Inserted {len(df)} records to Adaptive_Data.")
+    sql.insert_into("Adaptive_AccountValues", df, if_exists="replace", chunksize=10000)
+    logging.info(f"Inserted {len(df)} records to Adaptive_AccountValues.")
 
 
 def sync_personnel_data(sql, adaptive):
