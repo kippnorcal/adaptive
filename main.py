@@ -78,19 +78,18 @@ def parse_personnel_export(sql, xml):
     ):  # output is none for some levels with no personnel
         data = parsed_dict["response"]["output"]["data"]["#text"]
         df = pd.read_csv(StringIO(data))
-        # drop personnel columns per finance request for now
+        # drop compensation columns per finance request for now
         df.drop(
             columns=[
-                "Base Salary (Step only)",
-                "Non-Step Base Salary",
-                "Salary Adj",
-                "Salary Adj for YoY Growth (Step Only)",
-                "Total Effective Salary",
-                "Hourly Rate",
-                "Tenure Bonus",
+                "Base Sal",
+                "NS Base Sal",
+                "Sal Adj",
+                "Tot Eff Sal",
+                "Hrly Rate",
+                "Tenure Bon",
                 "OT Pay",
-                "Flex Bonus",
-                "Total Annual Compensation",
+                "Flex Bon",
+                "Tot Comp",
             ],
             inplace=True,
         )
