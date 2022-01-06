@@ -1,4 +1,4 @@
-# adaptive_connector
+# adaptive
 ETL job that pulls data from Adaptive to DW
 
 ## Dependencies:
@@ -10,7 +10,7 @@ ETL job that pulls data from Adaptive to DW
 
 ### Clone this repo
 ```
-$ git clone https://github.com/kippnorcal/adaptive_connector.git
+$ git clone https://github.com/kippnorcal/adaptive.git
 ```
 
 ### Create .env file with project secrets
@@ -67,10 +67,10 @@ ExportPersonnel: Export the personnel data for this level
 
 ### Build the docker image
 ```
-docker build -t adaptive_connector .
+docker build -t adaptive .
 ```
 
 ### Run the job
 ```
-docker run --rm -it adaptive_connector
+docker run --rm -it adaptive
 ```
