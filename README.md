@@ -10,7 +10,7 @@ ETL job that pulls data from Adaptive to DW
 
 ### Clone this repo
 ```
-$ git clone https://github.com/kipp-bayarea/adaptive_connector.git
+$ git clone https://github.com/kippnorcal/adaptive_connector.git
 ```
 
 ### Create .env file with project secrets
