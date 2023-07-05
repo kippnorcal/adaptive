@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+pandas = "*"
+sqlalchemy = "~=1.4"
 sqlsorcery = {extras = ["mssql"],version = "*"}
 requests = "*"
 xmltodict = "*"
