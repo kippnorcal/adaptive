@@ -1,11 +1,11 @@
 FROM python:3.7
 WORKDIR /code
 # SQL dependencies
-RUN wget https://packages.microsoft.com/debian/9/prod/pool/main/m/msodbcsql17/msodbcsql17_17.6.1.1-1_amd64.deb
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
 RUN apt-get install -y apt-utils
-RUN apt-get install -y unixodbc unixodbc-dev
-RUN yes | dpkg -i msodbcsql17_17.6.1.1-1_amd64.deb
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
 # python dependencies
 RUN pip install pipenv
 COPY Pipfile .
